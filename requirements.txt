@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+python-multipart
+PyMuPDF
+httpx
+google-generativeai
+asyncio
