@@ -42,7 +42,11 @@ async def reason_candidate(resume_text: str, jd_text: str, extracted_claims: dic
         "role_classification": "<e.g., Backend Developer>",
         "primary_skills": ["skill1", "skill2"]
       }},
-      "scores": {json.dumps(scores)},
+      "scores": {{
+        "trust_score": <integer 0-100, adjusting baseline based on truthfulness>,
+        "jd_match": {scores['jd_match']},
+        "confidence_level": "<high/medium/low based on trust_score>"
+      }},
       "assessments": {{
         "strengths": ["strength1", "strength2"],
         "risk_factors": ["risk1"]
@@ -50,7 +54,10 @@ async def reason_candidate(resume_text: str, jd_text: str, extracted_claims: dic
       "interview_questions": ["question1", "question2"]
     }}
     
-    Ensure your reasoning relies heavily on the 'Verification Results' and 'Calculated Scores' to identify truths and highlight risks based on inconsistencies.
+    Ensure your reasoning relies heavily on the 'Verification Results'. 
+    CRITICAL INSTRUCTION FOR SCORING:
+    The "Calculated Scores" provided above are naive baseline metrics. 
+    If you detect significant discrepancies between the resume's claims and the Verification Results (e.g. resume claims massive GitHub activity but API shows 0 repos/commits; claims expert coding ranking but API shows 'newbie'), you MUST severely penalize the `trust_score` (down to 10-40) and set `confidence_level` to "low". You are the final arbiter of truth—flag fakes aggressively.
     """
     
     try:
