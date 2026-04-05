@@ -30,6 +30,9 @@ class ExtractedClaims(BaseModel):
     github_links: List[str] = []
     platforms: List[str] = []
     experience_dates: List[str] = []
+    github_username: Optional[str] = None
+    leetcode_username: Optional[str] = None
+    codeforces_username: Optional[str] = None
 
 class VerifiedClaims(BaseModel):
     github_verified: dict = {}

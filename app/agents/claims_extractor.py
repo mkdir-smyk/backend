@@ -16,20 +16,56 @@ async def extract_claims(resume_text: str) -> ExtractedClaims:
         return ExtractedClaims()
 
     prompt = f"""
-    You are an expert technical recruiter analyzing a resume.
-    Extract the candidate's claims into the following strict JSON format. 
-    Ensure the output is ONLY a valid JSON object matching this schema, without markdown formatting like ```json.
-    
+    You are a high-precision information extraction system.
+
+    Your task is to extract verifiable, structured claims from a resume.
+
+    ### EXTRACTION RULES (STRICT)
+
+    - Output MUST be valid JSON only (no markdown, no explanations).
+    - Do NOT hallucinate or infer missing data.
+    - If a field is not present, return an empty list [].
+    - Normalize all outputs:
+    - Skills → concise technical terms (e.g., "Python", "FastAPI")
+    - Projects → short descriptive phrases
+    - Links → full valid URLs only
+    - Platforms → standardized names (e.g., "LeetCode", "Codeforces")
+    - Dates → normalized format (e.g., "2020-2022", "2022-Present")
+
+    ### FIELDS TO EXTRACT
+
+    Extract the following categories if present in the resume:
+
+    1. skills → programming languages, frameworks, tools
+    2. projects → personal or professional project descriptions
+    3. github_links → any GitHub profile or repository links
+    4. platforms → coding platforms (LeetCode, Codeforces, etc.)
+    5. experience_dates → employment or project timelines
+    6. github_username → exact username if mentioned or parsed from link (or null)
+    7. leetcode_username → exact username if mentioned or parsed from link (or null)
+    8. codeforces_username → exact username if mentioned or parsed from link (or null)
+
+    ### OUTPUT SCHEMA
+
+    Return ONLY this JSON structure:
+
     {{
-        "skills": ["Python", "FastAPI"],
-        "projects": ["Built a distributed task queue", "E-commerce backend"],
-        "github_links": ["https://github.com/user"],
-        "platforms": ["LeetCode", "Codeforces"],
-        "experience_dates": ["2020-2022", "2022-Present"]
+    "skills": ["skill1", "skill2"],
+    "projects": ["project1", "project2"],
+    "github_links": ["link1"],
+    "platforms": ["platform1"],
+    "experience_dates": ["date1"],
+    "github_username": "string or null",
+    "leetcode_username": "string or null",
+    "codeforces_username": "string or null"
     }}
-    
+
+    ### INPUT DATA
+
     Resume Text:
+    \"\"\"
     {resume_text}
+    \"\"\"
     """
     
     try:
