@@ -52,12 +52,22 @@ _TECH_BOOST_PATTERNS = re.compile(
 
 
 def _tokenize(text: str) -> set[str]:
-    return set(re.findall(r'\b[a-zA-Z][a-zA-Z0-9\+\#\.]*\b', clean_text(text).lower()))
+    if not text:
+        return set()
+    cleaned = clean_text(text)
+    if not cleaned:
+        return set()
+    return set(re.findall(r'\b[a-zA-Z][a-zA-Z0-9\+\#\.]*\b', cleaned.lower()))
 
 
 def _extract_skill_ngrams(text: str) -> set[str]:
     """Extract both unigrams and bigrams for multi-word skills (e.g. 'machine learning')."""
-    tokens = re.findall(r'\b[a-zA-Z][a-zA-Z0-9\+\#\.]*\b', clean_text(text).lower())
+    if not text:
+        return set()
+    cleaned = clean_text(text)
+    if not cleaned:
+        return set()
+    tokens = re.findall(r'\b[a-zA-Z][a-zA-Z0-9\+\#\.]*\b', cleaned.lower())
     unigrams = set(tokens)
     bigrams = {f"{tokens[i]} {tokens[i+1]}" for i in range(len(tokens) - 1)}
     return unigrams | bigrams
@@ -73,6 +83,9 @@ def _compute_jd_match(resume_text: str, jd_text: str) -> int:
     3. Score = weighted_overlap / weighted_jd_total * 100
     4. Cap at 100. Never divide by the full JD vocab.
     """
+    if not resume_text or not jd_text:
+        return 0
+
     resume_tokens = _extract_skill_ngrams(resume_text)
     jd_tokens = _extract_skill_ngrams(jd_text)
 

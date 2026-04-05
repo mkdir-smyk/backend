@@ -13,6 +13,7 @@ Key fixes vs original:
 - Full resume + JD text passed (not truncated to 2000/1000 chars which lost key info)
 """
 
+import re
 import google.generativeai as genai
 import json
 from app.core.config import settings
@@ -38,9 +39,6 @@ def _strip_fences(text: str) -> str:
     text = re.sub(r'^```[a-zA-Z]*\s*', '', text)
     text = re.sub(r'\s*```$', '', text)
     return text.strip()
-
-
-import re
 
 
 async def reason_candidate(
